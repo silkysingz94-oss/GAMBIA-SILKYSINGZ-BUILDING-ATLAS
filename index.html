@@ -1,269 +1,1417 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SILKYSINGZ | GAMBIA SILKYSINGZ BUILDING ATLAS</title>
+<title>SILKYSINGZ | GAMBIA BUILDING ATLAS</title>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
 <style>
-:root{--bg:#07111b;--panel:#0d1b29;--panel2:#102235;--line:#20384b;--text:#e7f0f7;--muted:#8da5b8;--cyan:#38d6d0;--blue:#4b9cff;--gold:#f0bd63;--green:#66d6a3;--red:#ff8278}
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Manrope,Arial,sans-serif}
-body{overflow:hidden}.app{height:100vh;display:grid;grid-template-rows:66px 1fr 27px}
-header{display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--line);background:#091521;gap:16px}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}.brandmark{width:38px;height:38px;border:1px solid #2b6670;border-radius:10px;display:grid;place-items:center;color:var(--cyan);font-weight:800;font-size:19px;background:#0c2832}
-.brand h1{font-size:14px;letter-spacing:.12em;margin:0;font-weight:800}.brand p{font-size:10px;color:var(--muted);margin:3px 0 0;letter-spacing:.08em}
-.header-right{display:flex;align-items:center;gap:10px}.status{font:10px 'DM Mono';color:var(--green);border:1px solid #285744;padding:6px 9px;border-radius:20px}.header-tag{font:10px 'DM Mono';color:var(--muted)}
-main{min-height:0;display:grid;grid-template-columns:290px minmax(360px,1fr) 310px;gap:1px;background:var(--line)}
-.panel{background:var(--panel);min-height:0;overflow:auto;padding:15px}.panel::-webkit-scrollbar{width:6px}.panel::-webkit-scrollbar-thumb{background:#294255;border-radius:6px}
-.section{margin-bottom:17px}.eyebrow{font:10px 'DM Mono';letter-spacing:.13em;color:var(--cyan);margin:0 0 10px;text-transform:uppercase}.section-title{font-size:12px;font-weight:800;margin:0 0 10px}
+:root{
+--bg:#07111b;
+--panel:#0d1b29;
+--panel2:#102235;
+--line:#20384b;
+--text:#e7f0f7;
+--muted:#8da5b8;
+--cyan:#38d6d0;
+--blue:#4b9cff;
+--gold:#f0bd63;
+--green:#66d6a3;
+--red:#ff8278;
+}
+*{box-sizing:border-box}
+html,body{
+margin:0;height:100%;
+background:var(--bg);color:var(--text);
+font-family:Manrope,Arial,sans-serif
+}
+body{overflow:hidden}
+.app{
+height:100vh;
+display:grid;
+grid-template-rows:66px 1fr 27px
+}
+header{
+display:flex;align-items:center;justify-content:space-between;
+padding:0 18px;border-bottom:1px solid var(--line);
+background:#091521;gap:16px
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brandmark{
+width:38px;height:38px;border:1px solid #2b6670;
+border-radius:10px;display:grid;place-items:center;
+color:var(--cyan);font-weight:800;font-size:19px;
+background:#0c2832
+}
+.brand h1{font-size:14px;letter-spacing:.12em;margin:0;font-weight:800}
+.brand p{font-size:10px;color:var(--muted);margin:3px 0 0;letter-spacing:.08em}
+.header-right{display:flex;align-items:center;gap:10px}
+.status{
+font:10px 'DM Mono';color:var(--green);
+border:1px solid #285744;padding:6px 9px;border-radius:20px
+}
+.header-tag{font:10px 'DM Mono';color:var(--muted)}
+main{
+min-height:0;display:grid;
+grid-template-columns:290px minmax(360px,1fr) 310px;
+gap:1px;background:var(--line)
+}
+.panel{
+background:var(--panel);min-height:0;overflow:auto;padding:15px
+}
+.panel::-webkit-scrollbar{width:6px}
+.panel::-webkit-scrollbar-thumb{background:#294255;border-radius:6px}
+.section{margin-bottom:17px}
+.eyebrow{
+font:10px 'DM Mono';letter-spacing:.13em;
+color:var(--cyan);margin:0 0 10px;text-transform:uppercase
+}
+.section-title{font-size:12px;font-weight:800;margin:0 0 10px}
 label{display:block;font-size:10px;color:var(--muted);margin:9px 0 5px}
-select,input[type=file]{width:100%;background:#091521;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:9px;font:11px Manrope;outline:none}
-select:focus{border-color:var(--cyan)}.btnrow{display:flex;gap:7px;margin-top:10px}.btn{border:1px solid var(--line);background:#14283a;color:var(--text);border-radius:6px;padding:9px 10px;font:700 10px Manrope;cursor:pointer;flex:1}.btn.primary{background:#0c5559;border-color:#1c8988;color:#eaffff}.btn:hover{filter:brightness(1.2)}
-.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.check{font-size:10px;color:#c5d3df;display:flex;align-items:center;gap:7px}.check input{accent-color:var(--cyan)}
-.note{font-size:10px;line-height:1.55;color:var(--muted);background:#0a1722;border:1px solid var(--line);border-radius:7px;padding:10px}
-.mapwrap{position:relative;min-width:0;min-height:0;background:#0b1722}#map{height:100%;width:100%;background:#0b1722}
-.maphead{position:absolute;z-index:500;top:12px;left:12px;pointer-events:none;background:#081521eF;border:1px solid #294355;border-radius:7px;padding:9px 12px;max-width:calc(100% - 24px)}
-.maphead strong{display:block;font-size:11px;letter-spacing:.08em}.maphead span{font:9px 'DM Mono';color:var(--muted)}
-.maptools{position:absolute;z-index:500;right:12px;top:12px;display:flex;flex-direction:column;gap:6px}
-.maptools button{background:#0a1926;border:1px solid #315066;color:var(--text);padding:8px 10px;border-radius:6px;font:10px Manrope;cursor:pointer}
-.mapfoot{position:absolute;z-index:500;bottom:12px;left:12px;background:#081521eF;border:1px solid #294355;border-radius:6px;padding:7px 10px;font:9px 'DM Mono';color:#b5c8d8;pointer-events:none}
-.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:10px}.kpi span{display:block;font:9px 'DM Mono';color:var(--muted);text-transform:uppercase}.kpi strong{display:block;font-size:20px;margin-top:5px;letter-spacing:-.04em}.kpi small{font-size:9px;color:var(--muted)}
-.chartbox{height:175px;background:#0a1722;border:1px solid var(--line);border-radius:7px;padding:9px}
-.legend{display:grid;gap:8px;font-size:10px;color:#c5d3df}.swatch{display:inline-block;width:17px;height:7px;border-radius:2px;margin-right:7px;background:#36d6d0}
-.progress{height:5px;background:#1c3142;border-radius:5px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;width:0;background:var(--cyan)}
-footer{display:flex;justify-content:space-between;align-items:center;padding:0 14px;border-top:1px solid var(--line);font:9px 'DM Mono';color:#8199ab;background:#091521}
-.leaflet-control-attribution{font-size:9px!important;background:#07111bd9!important;color:#9fb4c5!important}.leaflet-control-attribution a{color:#69c9d0!important}
-.leaflet-control-zoom a{background:#0b1b29!important;color:#e7f0f7!important;border-color:#294355!important}
-@media(max-width:1000px){main{grid-template-columns:250px minmax(300px,1fr)}.right{display:none}}
-@media(max-width:700px){body{overflow:auto}.app{height:auto;min-height:100vh;grid-template-rows:60px auto 27px}main{display:flex;flex-direction:column}.left,.right{display:block;max-height:none}.mapwrap{height:58vh;min-height:390px;order:-1}.panel{overflow:visible}.header-tag{display:none}}
+select,input[type=file]{
+width:100%;background:#091521;color:var(--text);
+border:1px solid var(--line);border-radius:6px;
+padding:9px;font:11px Manrope;outline:none
+}
+select:focus{border-color:var(--cyan)}
+.btnrow{display:flex;gap:7px;margin-top:10px}
+.btn{
+border:1px solid var(--line);background:#14283a;
+color:var(--text);border-radius:6px;padding:9px 10px;
+font:700 10px Manrope;cursor:pointer;flex:1
+}
+.btn.primary{background:#0c5559;border-color:#1c8988;color:#eaffff}
+.btn:hover{filter:brightness(1.2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.check{font-size:10px;color:#c5d3df;display:flex;align-items:center;gap:7px}
+.check input{accent-color:var(--cyan)}
+.note{
+font-size:10px;line-height:1.55;color:var(--muted);
+background:#0a1722;border:1px solid var(--line);
+border-radius:7px;padding:10px
+}
+.mapwrap{position:relative;min-width:0;min-height:0;background:#0b1722}
+#map{height:100%;width:100%;background:#0b1722}
+.maphead{
+position:absolute;z-index:500;top:12px;left:12px;
+pointer-events:none;background:#081521ef;
+border:1px solid #294355;border-radius:7px;
+padding:9px 12px;max-width:calc(100% - 24px)
+}
+.maphead strong{display:block;font-size:11px;letter-spacing:.08em}
+.maphead span{font:9px 'DM Mono';color:var(--muted)}
+.maptools{
+position:absolute;z-index:500;right:12px;top:12px;
+display:flex;flex-direction:column;gap:6px
+}
+.maptools button{
+background:#0a1926;border:1px solid #315066;
+color:var(--text);padding:8px 10px;border-radius:6px;
+font:10px Manrope;cursor:pointer
+}
+.mapfoot{
+position:absolute;z-index:500;bottom:12px;left:12px;
+background:#081521ef;border:1px solid #294355;
+border-radius:6px;padding:7px 10px;
+font:9px 'DM Mono';color:#b5c8d8;pointer-events:none
+}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi{
+background:var(--panel2);border:1px solid var(--line);
+border-radius:7px;padding:10px;min-width:0
+}
+.kpi span{
+display:block;font:9px 'DM Mono';
+color:var(--muted);text-transform:uppercase
+}
+.kpi strong{
+display:block;font-size:20px;margin-top:5px;letter-spacing:-.04em;
+overflow-wrap:anywhere
+}
+.kpi small{font-size:9px;color:var(--muted)}
+.chartbox{
+height:175px;background:#0a1722;
+border:1px solid var(--line);border-radius:7px;padding:9px
+}
+.legend{display:grid;gap:8px;font-size:10px;color:#c5d3df}
+.swatch{
+display:inline-block;width:17px;height:7px;
+border-radius:2px;margin-right:7px;background:#36d6d0
+}
+.progress{
+height:5px;background:#1c3142;border-radius:5px;
+overflow:hidden;margin-top:8px
+}
+.progress i{
+display:block;height:100%;width:0;
+background:var(--cyan);transition:width .25s
+}
+footer{
+display:flex;justify-content:space-between;align-items:center;
+padding:0 14px;border-top:1px solid var(--line);
+font:9px 'DM Mono';color:#8199ab;background:#091521;gap:8px
+}
+.leaflet-control-attribution{
+font-size:9px!important;background:#07111bd9!important;color:#9fb4c5!important
+}
+.leaflet-control-attribution a{color:#69c9d0!important}
+.leaflet-control-zoom a{
+background:#0b1b29!important;color:#e7f0f7!important;
+border-color:#294355!important
+}
+.leaflet-tooltip{
+background:#091521!important;color:#e7f0f7!important;
+border:1px solid #315066!important;font-size:10px!important
+}
+@media(max-width:1100px){
+main{grid-template-columns:250px minmax(300px,1fr)}
+.right{display:none}
+}
+@media(max-width:700px){
+body{overflow:auto}
+.app{height:auto;min-height:100vh;grid-template-rows:60px auto 35px}
+main{display:flex;flex-direction:column}
+.left,.right{display:block;max-height:none}
+.mapwrap{height:58vh;min-height:390px;order:-1}
+.panel{overflow:visible}
+.header-tag{display:none}
+footer{font-size:8px}
+}
 </style>
 </head>
+
 <body>
 <div class="app">
+
 <header>
- <div class="brand"><div class="brandmark">S</div><div><h1>SILKYSINGZ / GAMBIA BUILDING ATLAS</h1><p>GAMBIA BORGESIAN BUILDING ATLAS</p></div></div>
- <div class="header-right"><span class="header-tag">GIS / CARTOGRAPHY UNIT</span><span class="status" id="status">● READY</span></div>
-</header>
-<main>
-<aside class="panel left">
- <section class="section"><p class="eyebrow">01 / CONTROL CENTRE</p><h2 class="section-title">National building atlas</h2>
- <div class="note">Explore mapped building footprints across The Gambia. Footprints are requested dynamically for the visible map area to avoid downloading the entire national dataset into the browser.</div></section>
- <section class="section"><p class="eyebrow">02 / GEOGRAPHIC SELECTION</p>
- <label for="region">Region</label><select id="region"><option value="">All regions — National</option></select>
- <label for="lga">Local Government Area</label><select id="lga"><option value="">All LGAs</option></select>
- <label for="district">District</label><select id="district"><option value="">All districts</option></select>
- <label for="ward">Ward</label><select id="ward"><option value="">All wards</option></select>
- <div class="btnrow"><button class="btn primary" id="apply">APPLY AREA</button><button class="btn" id="reset">RESET</button></div>
- </section>
- <section class="section"><p class="eyebrow">03 / MAP CONFIGURATION</p>
- <label for="basemap">Basemap</label><select id="basemap"><option value="street">Street map</option><option value="satellite">Satellite imagery</option><option value="hybrid">Hybrid imagery + labels</option><option value="terrain">Terrain</option><option value="dark">Dark map</option></select>
- <div class="checks">
- <label class="check"><input type="checkbox" id="buildings" checked> Building footprints</label>
- <label class="check"><input type="checkbox" id="atlasgrid" checked> Atlas grid</label>
- <label class="check"><input type="checkbox" id="admin" checked> EA boundaries</label>
- <label class="check"><input type="checkbox" id="labels" checked> Building outlines</label>
- </div>
- <label for="gridSize">Atlas grid interval</label><select id="gridSize"><option value="0.025">Fine — 0.025°</option><option value="0.05" selected>Standard — 0.05°</option><option value="0.1">Wide — 0.10°</option></select>
- <label for="limit">Maximum buildings per map request</label><select id="limit"><option value="1000">1,000</option><option value="2500" selected>2,500</option><option value="5000">5,000</option></select>
- </section>
- <section class="section"><p class="eyebrow">04 / DATA EXTRACTION</p>
- <div class="btnrow"><button class="btn primary" id="load">LOAD BUILDINGS IN VIEW</button></div>
- <div class="btnrow"><button class="btn" id="csv">EXPORT CSV</button><button class="btn" id="geojson">EXPORT GEOJSON</button></div>
- <div class="btnrow"><button class="btn" id="fit">GAMBIA EXTENT</button><button class="btn" id="clear">CLEAR BUILDINGS</button></div>
- <div class="note" style="margin-top:10px">Zoom to neighbourhood level (approximately zoom 14 or higher), then load buildings. Large national-wide building downloads are intentionally not run in one browser request.</div>
- </section>
- <section class="section"><p class="eyebrow">05 / DATA STATUS</p><div id="dataStatus" class="note">Administrative boundaries: waiting to load.<br>Building footprints: not yet requested.</div><div class="progress"><i id="progress"></i></div></section>
-</aside>
-<div class="mapwrap">
- <div class="maphead"><strong>THE GAMBIA / BUILDING FOOTPRINT ATLAS</strong><span>OPENSTREETMAP • ATLAS GRID • SPATIAL EXPLORATION</span></div>
- <div id="map"></div>
- <div class="maptools"><button id="zoomIn">＋</button><button id="zoomOut">－</button><button id="home">⌂ National view</button></div>
- <div class="mapfoot" id="mapfoot">WGS 84 / EPSG:4326 · BUILDINGS LOAD AT LOCAL SCALE</div>
+<div class="brand">
+<div class="brandmark">S</div>
+<div>
+<h1>SILKYSINGZ / GAMBIA BUILDING ATLAS</h1>
+<p>NATIONAL BUILDING FOOTPRINT INTELLIGENCE</p>
 </div>
+</div>
+<div class="header-right">
+<span class="header-tag">GIS / CARTOGRAPHY UNIT</span>
+<span class="status" id="status">● READY</span>
+</div>
+</header>
+
+<main>
+
+<!-- LEFT PANEL -->
+<aside class="panel left">
+
+<section class="section">
+<p class="eyebrow">01 / CONTROL CENTRE</p>
+<h2 class="section-title">National building atlas</h2>
+<div class="note">
+Explore mapped building footprints across The Gambia.
+The application retrieves OpenStreetMap building polygons
+for the visible map area. The retrieval and display ceiling
+is 50,000 buildings per loading session.
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">02 / GEOGRAPHIC SELECTION</p>
+
+<label for="region">Region</label>
+<select id="region">
+<option value="">All regions — National</option>
+</select>
+
+<label for="lga">Local Government Area</label>
+<select id="lga">
+<option value="">All LGAs</option>
+</select>
+
+<label for="district">District</label>
+<select id="district">
+<option value="">All districts</option>
+</select>
+
+<label for="ward">Ward</label>
+<select id="ward">
+<option value="">All wards</option>
+</select>
+
+<div class="btnrow">
+<button class="btn primary" id="apply">APPLY AREA</button>
+<button class="btn" id="reset">RESET</button>
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">03 / MAP CONFIGURATION</p>
+
+<label for="basemap">Basemap</label>
+<select id="basemap">
+<option value="street">Street map</option>
+<option value="satellite">Satellite imagery</option>
+<option value="hybrid">Hybrid imagery + labels</option>
+<option value="terrain">Terrain</option>
+<option value="dark">Dark map</option>
+</select>
+
+<div class="checks">
+<label class="check"><input type="checkbox" id="buildings" checked> Building footprints</label>
+<label class="check"><input type="checkbox" id="atlasgrid" checked> Atlas grid</label>
+<label class="check"><input type="checkbox" id="admin" checked> EA boundaries</label>
+<label class="check"><input type="checkbox" id="labels" checked> Building outlines</label>
+</div>
+
+<label for="gridSize">Atlas grid interval</label>
+<select id="gridSize">
+<option value="0.025">Fine — 0.025°</option>
+<option value="0.05" selected>Standard — 0.05°</option>
+<option value="0.1">Wide — 0.10°</option>
+</select>
+
+<label for="limit">Maximum buildings per loading session</label>
+<select id="limit">
+<option value="5000">5,000 buildings</option>
+<option value="10000">10,000 buildings</option>
+<option value="25000">25,000 buildings</option>
+<option value="35000">35,000 buildings</option>
+<option value="50000" selected>50,000 buildings</option>
+</select>
+
+<label for="tiles">Spatial request subdivision</label>
+<select id="tiles">
+<option value="2">2 × 2 tiles — faster requests</option>
+<option value="3">3 × 3 tiles</option>
+<option value="4" selected>4 × 4 tiles — recommended</option>
+<option value="5">5 × 5 tiles — smaller requests</option>
+</select>
+
+</section>
+
+<section class="section">
+<p class="eyebrow">04 / DATA EXTRACTION</p>
+
+<div class="btnrow">
+<button class="btn primary" id="load">LOAD UP TO 50,000 BUILDINGS</button>
+</div>
+
+<div class="btnrow">
+<button class="btn" id="csv">EXPORT CSV</button>
+<button class="btn" id="geojson">EXPORT GEOJSON</button>
+</div>
+
+<div class="btnrow">
+<button class="btn" id="fit">GAMBIA EXTENT</button>
+<button class="btn" id="clear">CLEAR BUILDINGS</button>
+</div>
+
+<div class="note" style="margin-top:10px">
+Zoom to neighbourhood level (approximately zoom 12 or higher).
+The visible map extent is divided into smaller spatial requests.
+The application stops when the selected maximum is reached.
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">05 / DATA STATUS</p>
+<div id="dataStatus" class="note">
+Administrative boundaries: waiting to load.<br>
+Building footprints: not yet requested.
+</div>
+<div class="progress"><i id="progress"></i></div>
+</section>
+
+</aside>
+
+<!-- MAP -->
+<div class="mapwrap">
+
+<div class="maphead">
+<strong>THE GAMBIA / BUILDING FOOTPRINT ATLAS</strong>
+<span>OPENSTREETMAP • SPATIAL GRID • BUILDING INTELLIGENCE</span>
+</div>
+
+<div id="map"></div>
+
+<div class="maptools">
+<button id="zoomIn">＋</button>
+<button id="zoomOut">－</button>
+<button id="home">⌂ National view</button>
+</div>
+
+<div class="mapfoot" id="mapfoot">
+WGS 84 / EPSG:4326 · BUILDINGS LOAD AT LOCAL SCALE
+</div>
+
+</div>
+
+<!-- RIGHT PANEL -->
 <aside class="panel right">
- <section class="section"><p class="eyebrow">06 / NATIONAL INTELLIGENCE</p><h2 class="section-title">Mapped footprint indicators</h2>
- <div class="kpis">
- <div class="kpi"><span>Loaded buildings</span><strong id="count">0</strong><small>Current loaded map area</small></div>
- <div class="kpi"><span>Footprint area</span><strong id="area">0.00</strong><small>Approx. hectares</small></div>
- <div class="kpi"><span>Mean footprint</span><strong id="mean">0</strong><small>Square metres</small></div>
- <div class="kpi"><span>Tagged buildings</span><strong id="tagged">0%</strong><small>With building type tag</small></div>
- </div></section>
- <section class="section"><p class="eyebrow">07 / BUILDING TYPOLOGY</p><div class="chartbox"><canvas id="typeChart"></canvas></div></section>
- <section class="section"><p class="eyebrow">08 / FOOTPRINT SIZE</p><div class="chartbox"><canvas id="sizeChart"></canvas></div></section>
- <section class="section"><p class="eyebrow">09 / MAP LEGEND</p><div class="legend">
- <div><i class="swatch"></i> OpenStreetMap building footprint</div>
- <div><i class="swatch" style="background:#f0bd63"></i> Atlas grid / sheet index</div>
- <div><i class="swatch" style="background:#4b9cff"></i> Census EA boundary</div>
- </div></section>
- <section class="section"><p class="eyebrow">10 / METHODOLOGY & LIMITATIONS</p><div class="note">Building polygons are queried from OpenStreetMap using the visible map extent. The map shows buildings mapped in OSM, not a verified census of every structure in The Gambia. Missing footprints do not mean buildings are absent. Footprint area is calculated geodesically from polygon geometry. Building counts and area statistics refer only to currently loaded features. National completeness requires an authoritative building inventory or a processed country extract.</div></section>
- <section class="section"><p class="eyebrow">11 / DATA SOURCES</p><div class="note">OpenStreetMap contributors (ODbL). Administrative overlay: Gambia Census EA GeoJSON, where accessible. Basemaps: Esri, OpenStreetMap and CARTO. Always verify boundary and footprint suitability before official statistical use.</div></section>
+
+<section class="section">
+<p class="eyebrow">06 / NATIONAL INTELLIGENCE</p>
+<h2 class="section-title">Mapped footprint indicators</h2>
+
+<div class="kpis">
+<div class="kpi">
+<span>Loaded buildings</span>
+<strong id="count">0</strong>
+<small>Current loading session</small>
+</div>
+
+<div class="kpi">
+<span>Footprint area</span>
+<strong id="area">0.00</strong>
+<small>Approx. hectares</small>
+</div>
+
+<div class="kpi">
+<span>Mean footprint</span>
+<strong id="mean">0</strong>
+<small>Square metres</small>
+</div>
+
+<div class="kpi">
+<span>Tagged buildings</span>
+<strong id="tagged">0%</strong>
+<small>Specific building type</small>
+</div>
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">07 / BUILDING TYPOLOGY</p>
+<div class="chartbox">
+<canvas id="typeChart"></canvas>
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">08 / FOOTPRINT SIZE</p>
+<div class="chartbox">
+<canvas id="sizeChart"></canvas>
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">09 / MAP LEGEND</p>
+<div class="legend">
+<div><i class="swatch"></i> OSM building footprints</div>
+<div><i class="swatch" style="background:#f0bd63"></i> Atlas grid / sheet index</div>
+<div><i class="swatch" style="background:#4b9cff"></i> Census EA boundaries</div>
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">10 / METHODOLOGY & LIMITATIONS</p>
+<div class="note">
+Building polygons are retrieved from OpenStreetMap using the
+visible map extent. The application uses multiple smaller
+geographic requests to improve retrieval reliability.
+
+The maximum display capacity is 50,000 features per session.
+Footprint area is calculated geodesically from polygon geometry.
+
+The results represent buildings mapped in OpenStreetMap,
+not a verified census of all structures in The Gambia.
+Missing footprints do not mean buildings are absent.
+
+National completeness requires a validated country-wide
+building inventory or processed national extract.
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">11 / DATA SOURCES</p>
+<div class="note">
+OpenStreetMap contributors (ODbL).<br>
+Administrative overlay: Gambia Census EA GeoJSON, where accessible.<br>
+Basemaps: Esri, OpenStreetMap and CARTO.<br><br>
+Verify boundary and footprint suitability before official
+statistical use.
+</div>
+</section>
+
 </aside>
 </main>
-<footer><span>Produced by Ansu Singhateh | GIS Analyst-GIS / Cartography Unit | Gambia Bureau of Statistics</span><span>SILKYSINGZ GEOAI • Research and educational use</span></footer>
+
+<footer>
+<span>Produced by Ansu Singhateh | GIS Analyst - GIS / Cartography Unit | Gambia Bureau of Statistics</span>
+<span>SILKYSINGZ GEOAI • Research and educational use</span>
+</footer>
 </div>
+
 <script>
 (() => {
 'use strict';
+
 const $ = id => document.getElementById(id);
+
 const GAMBIA_BOUNDS = [[13.0,-16.9],[13.9,-13.7]];
+
 const EA_URLS = [
- 'https://raw.githubusercontent.com/silkysingz94-oss/GAMBIA-SILKYSINGZ-BUILDING-ATLAS/Census_EAs_Geo.json',
- 'https://cdn.jsdelivr.net/gh/silkysingz94-oss/GAMBIA-SILKYSINGZ-BUILDING-ATLAS@main/Census_EAs_Geo.json'
+'https://raw.githubusercontent.com/silkysingz94-oss/GAMBIA-SILKYSINGZ-BUILDING-ATLAS/main/Census_EAs_Geo.json',
+'https://cdn.jsdelivr.net/gh/silkysingz94-oss/GAMBIA-SILKYSINGZ-BUILDING-ATLAS@main/Census_EAs_Geo.json'
 ];
-const map = L.map('map',{zoomControl:true,preferCanvas:true,zoomSnap:.5}).setView([13.45,-15.55],8);
+
+const OVERPASS_ENDPOINTS = [
+'https://overpass-api.de/api/interpreter',
+'https://overpass.kumi.systems/api/interpreter',
+'https://overpass.private.coffee/api/interpreter'
+];
+
+const map = L.map('map',{
+zoomControl:true,
+preferCanvas:true,
+zoomSnap:0.5
+}).setView([13.45,-15.55],8);
+
 const baseDefs = {
- street: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'© OpenStreetMap contributors'}),
- satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'}),
- hybrid: L.layerGroup([
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'}),
-  L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19})
- ]),
- terrain: L.layerGroup([
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:13,attribution:'Tiles © Esri'}),
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer/tile/{z}/{y}/{x}',{maxZoom:13})
- ]),
- dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:20,attribution:'© OpenStreetMap © CARTO'})
+street:L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{maxZoom:20,attribution:'© OpenStreetMap contributors'}
+),
+
+satellite:L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{maxZoom:19,attribution:'Tiles © Esri'}
+),
+
+hybrid:L.layerGroup([
+L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{maxZoom:19,attribution:'Tiles © Esri'}
+),
+L.tileLayer(
+'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+{maxZoom:19}
+)
+]),
+
+terrain:L.layerGroup([
+L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
+{maxZoom:13,attribution:'Tiles © Esri'}
+),
+L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer/tile/{z}/{y}/{x}',
+{maxZoom:13}
+)
+]),
+
+dark:L.tileLayer(
+'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+{maxZoom:20,attribution:'© OpenStreetMap © CARTO'}
+)
 };
-let activeBase=baseDefs.street.addTo(map), eaData=null, eaLayer=null, buildingLayer=null, gridLayer=null;
-let loadedFeatures=[], requestBusy=false, requestTimer=null, typeChart=null, sizeChart=null;
-const fmt=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
-function setStatus(t,good=true){$('status').textContent=(good?'● ':'● ')+t;$('status').style.color=good?'var(--green)':'var(--gold)'}
-function propsOf(f){return f.properties||{}}
-function getProp(p,keys){for(const k of keys){if(p[k]!==undefined&&p[k]!==null&&String(p[k]).trim()!=='')return String(p[k]).trim()}return ''}
-const keys={
- region:['region','regionname','region_name','rconame','RCO','region_code'],
- lga:['lganame','lga_name','lga','lgname'],
- district:['distname','district','districtname','district_name'],
- ward:['wardname','ward','ward_name']
+
+let activeBase = baseDefs.street.addTo(map);
+let eaData = null;
+let eaLayer = null;
+let buildingLayer = null;
+let gridLayer = null;
+
+let loadedFeatures = [];
+let requestBusy = false;
+let typeChart = null;
+let sizeChart = null;
+
+const fmt = n => Number(n || 0).toLocaleString('en-US',{
+maximumFractionDigits:2
+});
+
+function setStatus(message,good=true){
+$('status').textContent='● '+message;
+$('status').style.color=good?'var(--green)':'var(--gold)';
+}
+
+function propsOf(f){
+return f.properties || {};
+}
+
+function getProp(p,keys){
+for(const k of keys){
+if(p[k]!==undefined && p[k]!==null &&
+String(p[k]).trim()!==''){
+return String(p[k]).trim();
+}
+}
+return '';
+}
+
+const keys = {
+region:['region','regionname','region_name','rconame','RCO','region_code'],
+lga:['lganame','lga_name','lga','lgname'],
+district:['distname','district','districtname','district_name'],
+ward:['wardname','ward','ward_name']
 };
-function uniqueValues(features,keyList){return [...new Set(features.map(f=>getProp(propsOf(f),keyList)).filter(Boolean))].sort((a,b)=>a.localeCompare(b))}
-function fillSelect(id,values,first){const s=$(id),old=s.value;s.innerHTML='';const o=document.createElement('option');o.value='';o.textContent=first;s.appendChild(o);values.forEach(v=>{const x=document.createElement('option');x.value=v;x.textContent=v;s.appendChild(x)});if(values.includes(old))s.value=old}
+
+function uniqueValues(features,keyList){
+return [...new Set(
+features.map(f=>getProp(propsOf(f),keyList)).filter(Boolean)
+)].sort((a,b)=>a.localeCompare(b));
+}
+
+function fillSelect(id,values,first){
+const s=$(id);
+const old=s.value;
+s.innerHTML='';
+
+const o=document.createElement('option');
+o.value='';
+o.textContent=first;
+s.appendChild(o);
+
+values.forEach(v=>{
+const x=document.createElement('option');
+x.value=v;
+x.textContent=v;
+s.appendChild(x);
+});
+
+if(values.includes(old))s.value=old;
+}
+
 function updateAdminOptions(){
- if(!eaData)return;
- const all=eaData.features||[],r=$('region').value,l=$('lga').value,d=$('district').value;
- let a=all.filter(f=>!r||getProp(propsOf(f),keys.region)===r);
- fillSelect('lga',uniqueValues(a,keys.lga),'All LGAs');
- let b=a.filter(f=>!$('lga').value||getProp(propsOf(f),keys.lga)===$('lga').value);
- fillSelect('district',uniqueValues(b,keys.district),'All districts');
- let c=b.filter(f=>!$('district').value||getProp(propsOf(f),keys.district)===$('district').value);
- fillSelect('ward',uniqueValues(c,keys.ward),'All wards');
+if(!eaData)return;
+
+const all=eaData.features||[];
+const r=$('region').value;
+
+let a=all.filter(f=>
+!r || getProp(propsOf(f),keys.region)===r
+);
+
+fillSelect('lga',uniqueValues(a,keys.lga),'All LGAs');
+
+const l=$('lga').value;
+let b=a.filter(f=>
+!l || getProp(propsOf(f),keys.lga)===l
+);
+
+fillSelect('district',uniqueValues(b,keys.district),'All districts');
+
+const d=$('district').value;
+let c=b.filter(f=>
+!d || getProp(propsOf(f),keys.district)===d
+);
+
+fillSelect('ward',uniqueValues(c,keys.ward),'All wards');
 }
+
 function selectedEAs(){
- if(!eaData)return [];
- const r=$('region').value,l=$('lga').value,d=$('district').value,w=$('ward').value;
- return (eaData.features||[]).filter(f=>{const p=propsOf(f);return (!r||getProp(p,keys.region)===r)&&(!l||getProp(p,keys.lga)===l)&&(!d||getProp(p,keys.district)===d)&&(!w||getProp(p,keys.ward)===w)});
+if(!eaData)return [];
+
+const r=$('region').value;
+const l=$('lga').value;
+const d=$('district').value;
+const w=$('ward').value;
+
+return (eaData.features||[]).filter(f=>{
+const p=propsOf(f);
+
+return (!r||getProp(p,keys.region)===r) &&
+(!l||getProp(p,keys.lga)===l) &&
+(!d||getProp(p,keys.district)===d) &&
+(!w||getProp(p,keys.ward)===w);
+});
 }
+
 function drawAdmin(){
- if(eaLayer){map.removeLayer(eaLayer);eaLayer=null}
- if(!$('admin').checked||!eaData)return;
- const feats=selectedEAs();eaLayer=L.geoJSON({type:'FeatureCollection',features:feats},{style:{color:'#4b9cff',weight:.65,opacity:.65,fillColor:'#4b9cff',fillOpacity:.025},onEachFeature:(f,l)=>{const p=propsOf(f);l.bindTooltip([getProp(p,keys.region),getProp(p,keys.lga),getProp(p,keys.district),getProp(p,keys.ward)].filter(Boolean).join(' · '),{sticky:true})}}).addTo(map);
- $('dataStatus').innerHTML=`Administrative boundaries: <b>${fmt(feats.length)}</b> selected EA polygons.<br>Building footprints: ${fmt(loadedFeatures.length)} loaded.`;
+if(eaLayer){
+map.removeLayer(eaLayer);
+eaLayer=null;
 }
+
+if(!$('admin').checked||!eaData)return;
+
+const feats=selectedEAs();
+
+eaLayer=L.geoJSON({
+type:'FeatureCollection',
+features:feats
+},{
+style:{
+color:'#4b9cff',
+weight:.65,
+opacity:.65,
+fillColor:'#4b9cff',
+fillOpacity:.025
+},
+onEachFeature:(f,l)=>{
+const p=propsOf(f);
+l.bindTooltip([
+getProp(p,keys.region),
+getProp(p,keys.lga),
+getProp(p,keys.district),
+getProp(p,keys.ward)
+].filter(Boolean).join(' · '),{sticky:true});
+}
+}).addTo(map);
+
+$('dataStatus').innerHTML=
+`Administrative boundaries: <b>${fmt(feats.length)}</b> selected EA polygons.<br>
+Building footprints: ${fmt(loadedFeatures.length)} loaded.`;
+}
+
 async function loadAdmin(){
- setStatus('LOADING EA BOUNDARIES');
- for(const url of EA_URLS){try{const res=await fetch(url);if(!res.ok)throw Error('HTTP '+res.status);const data=await res.json();if(!data.features)throw Error('Invalid GeoJSON');eaData=data;break}catch(e){console.warn('EA source failed',url,e)}}
- if(eaData){fillSelect('region',uniqueValues(eaData.features,keys.region),'All regions — National');updateAdminOptions();drawAdmin();setStatus('BOUNDARIES READY');$('dataStatus').innerHTML=`Administrative boundaries: <b>${fmt(eaData.features.length)}</b> EA polygons loaded.<br>Building footprints: not yet requested.`}
- else{setStatus('BOUNDARY SOURCE UNAVAILABLE',false);$('dataStatus').textContent='EA boundary file could not be reached. The basemap and building query remain available.'}
+setStatus('LOADING EA BOUNDARIES');
+
+for(const url of EA_URLS){
+try{
+const res=await fetch(url);
+if(!res.ok)throw Error('HTTP '+res.status);
+
+const data=await res.json();
+if(!data.features)throw Error('Invalid GeoJSON');
+
+eaData=data;
+break;
+
+}catch(e){
+console.warn('EA source failed',url,e);
 }
+}
+
+if(eaData){
+fillSelect(
+'region',
+uniqueValues(eaData.features,keys.region),
+'All regions — National'
+);
+
+updateAdminOptions();
+drawAdmin();
+
+setStatus('BOUNDARIES READY');
+
+$('dataStatus').innerHTML=
+`Administrative boundaries: <b>${fmt(eaData.features.length)}</b> EA polygons loaded.<br>
+Building footprints: not yet requested.`;
+}else{
+setStatus('BOUNDARY SOURCE UNAVAILABLE',false);
+
+$('dataStatus').textContent=
+'EA boundary file could not be reached. The basemap and building query remain available.';
+}
+}
+
 function drawGrid(){
- if(gridLayer){map.removeLayer(gridLayer);gridLayer=null}
- if(!$('atlasgrid').checked)return;
- const b=map.getBounds(),step=Number($('gridSize').value),features=[];
- const minLat=Math.floor(b.getSouth()/step)*step,maxLat=Math.ceil(b.getNorth()/step)*step;
- const minLng=Math.floor(b.getWest()/step)*step,maxLng=Math.ceil(b.getEast()/step)*step;
- let idx=0;
- for(let lat=minLat;lat<maxLat&&idx<900;lat+=step)for(let lng=minLng;lng<maxLng&&idx<900;lng+=step){
-  const poly=turf.polygon([[[lng,lat],[lng+step,lat],[lng+step,lat+step],[lng,lat+step],[lng,lat]]]);
-  poly.properties={sheet:'GMB-'+String(Math.round((lat+90)/step)).padStart(3,'0')+'-'+String(Math.round((lng+180)/step)).padStart(3,'0')};features.push(poly);idx++;
- }
- gridLayer=L.geoJSON({type:'FeatureCollection',features},{style:{color:'#e6b95e',weight:.6,opacity:.45,fillOpacity:0,dashArray:'3 5'},onEachFeature:(f,l)=>l.bindTooltip(f.properties.sheet)}).addTo(map);
+if(gridLayer){
+map.removeLayer(gridLayer);
+gridLayer=null;
 }
-function footprintStyle(){return {color:$('labels').checked?'#3bd6d0':'#268c99',weight:$('labels').checked?1:.45,opacity:.9,fillColor:'#168d9c',fillOpacity:.24}}
-function areaM2(feature){try{return turf.area(feature)}catch(e){return 0}}
+
+if(!$('atlasgrid').checked)return;
+
+const b=map.getBounds();
+const step=Number($('gridSize').value);
+
+const features=[];
+
+const minLat=Math.floor(b.getSouth()/step)*step;
+const maxLat=Math.ceil(b.getNorth()/step)*step;
+const minLng=Math.floor(b.getWest()/step)*step;
+const maxLng=Math.ceil(b.getEast()/step)*step;
+
+let idx=0;
+
+for(let lat=minLat;lat<maxLat && idx<900;lat+=step){
+for(let lng=minLng;lng<maxLng && idx<900;lng+=step){
+
+const poly=turf.polygon([[
+[lng,lat],
+[lng+step,lat],
+[lng+step,lat+step],
+[lng,lat+step],
+[lng,lat]
+]]);
+
+poly.properties={
+sheet:'GMB-'+
+String(Math.round((lat+90)/step)).padStart(3,'0')+'-'+
+String(Math.round((lng+180)/step)).padStart(3,'0')
+};
+
+features.push(poly);
+idx++;
+}
+}
+
+gridLayer=L.geoJSON({
+type:'FeatureCollection',
+features
+},{
+style:{
+color:'#e6b95e',
+weight:.6,
+opacity:.45,
+fillOpacity:0,
+dashArray:'3 5'
+},
+onEachFeature:(f,l)=>l.bindTooltip(f.properties.sheet)
+}).addTo(map);
+}
+
+function footprintStyle(){
+return {
+color:$('labels').checked?'#3bd6d0':'#268c99',
+weight:$('labels').checked?1:.45,
+opacity:.9,
+fillColor:'#168d9c',
+fillOpacity:.24
+};
+}
+
+function areaM2(feature){
+try{
+return turf.area(feature);
+}catch(e){
+return 0;
+}
+}
+
 function renderBuildings(){
- if(buildingLayer)map.removeLayer(buildingLayer);
- buildingLayer=L.geoJSON({type:'FeatureCollection',features:loadedFeatures},{style:footprintStyle,onEachFeature:(f,l)=>{const p=f.properties||{};const type=p.building||'building';l.bindTooltip(`${type}<br>OSM way ${p.osm_id||''}`,{sticky:true})}}).addTo(map);
- updateStats();
+
+if(buildingLayer){
+map.removeLayer(buildingLayer);
+buildingLayer=null;
 }
+
+if(!$('buildings').checked){
+updateStats();
+return;
+}
+
+buildingLayer=L.geoJSON({
+type:'FeatureCollection',
+features:loadedFeatures
+},{
+style:footprintStyle,
+
+onEachFeature:(f,l)=>{
+const p=f.properties||{};
+const type=p.building||'unspecified';
+
+l.bindTooltip(
+`${type}<br>OSM way ${p.osm_id||''}`,
+{sticky:true}
+);
+}
+}).addTo(map);
+
+updateStats();
+}
+
 function updateStats(){
- const n=loadedFeatures.length,areas=loadedFeatures.map(areaM2),sum=areas.reduce((a,b)=>a+b,0),mean=n?sum/n:0;
- const typed=loadedFeatures.filter(f=>f.properties&&f.properties.building&&f.properties.building!=='yes').length;
- $('count').textContent=fmt(n);$('area').textContent=fmt(sum/10000);$('mean').textContent=fmt(mean);$('tagged').textContent=n?Math.round(typed/n*100)+'%':'0%';
- const types={};loadedFeatures.forEach(f=>{const t=(f.properties&&f.properties.building)||'unspecified';types[t]=(types[t]||0)+1});
- const sorted=Object.entries(types).sort((a,b)=>b[1]-a[1]).slice(0,7);
- if(typeChart)typeChart.destroy();
- typeChart=new Chart($('typeChart'),{type:'bar',data:{labels:sorted.map(x=>x[0]),datasets:[{data:sorted.map(x=>x[1]),backgroundColor:'#38d6d0',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#91a8ba',font:{size:9}},grid:{color:'#20384b'}},y:{ticks:{color:'#c5d3df',font:{size:9}},grid:{display:false}}}}});
- const bins=[0,0,0,0,0],labels=['< 50 m²','50–100','100–200','200–500','> 500'];
- areas.forEach(a=>{if(a<50)bins[0]++;else if(a<100)bins[1]++;else if(a<200)bins[2]++;else if(a<500)bins[3]++;else bins[4]++});
- if(sizeChart)sizeChart.destroy();
- sizeChart=new Chart($('sizeChart'),{type:'bar',data:{labels,datasets:[{data:bins,backgroundColor:'#4b9cff',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#c5d3df',font:{size:9}},grid:{display:false}},y:{ticks:{color:'#91a8ba',font:{size:9}},grid:{color:'#20384b'}}}}});
+
+const n=loadedFeatures.length;
+
+const areas=loadedFeatures.map(areaM2);
+const sum=areas.reduce((a,b)=>a+b,0);
+const mean=n?sum/n:0;
+
+const typed=loadedFeatures.filter(f=>
+f.properties &&
+f.properties.building &&
+f.properties.building!=='yes'
+).length;
+
+$('count').textContent=fmt(n);
+$('area').textContent=fmt(sum/10000);
+$('mean').textContent=fmt(mean);
+$('tagged').textContent=n?
+Math.round(typed/n*100)+'%':'0%';
+
+const types={};
+
+loadedFeatures.forEach(f=>{
+const t=(f.properties&&f.properties.building)||'unspecified';
+types[t]=(types[t]||0)+1;
+});
+
+const sorted=Object.entries(types)
+.sort((a,b)=>b[1]-a[1])
+.slice(0,7);
+
+if(typeChart)typeChart.destroy();
+
+typeChart=new Chart($('typeChart'),{
+type:'bar',
+data:{
+labels:sorted.map(x=>x[0]),
+datasets:[{
+data:sorted.map(x=>x[1]),
+backgroundColor:'#38d6d0',
+borderRadius:3
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+indexAxis:'y',
+plugins:{legend:{display:false}},
+scales:{
+x:{
+ticks:{color:'#91a8ba',font:{size:9}},
+grid:{color:'#20384b'}
+},
+y:{
+ticks:{color:'#c5d3df',font:{size:9}},
+grid:{display:false}
 }
+}
+}
+});
+
+const bins=[0,0,0,0,0];
+const labels=['< 50 m²','50–100','100–200','200–500','> 500'];
+
+areas.forEach(a=>{
+if(a<50)bins[0]++;
+else if(a<100)bins[1]++;
+else if(a<200)bins[2]++;
+else if(a<500)bins[3]++;
+else bins[4]++;
+});
+
+if(sizeChart)sizeChart.destroy();
+
+sizeChart=new Chart($('sizeChart'),{
+type:'bar',
+data:{
+labels,
+datasets:[{
+data:bins,
+backgroundColor:'#4b9cff',
+borderRadius:3
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{legend:{display:false}},
+scales:{
+x:{
+ticks:{color:'#c5d3df',font:{size:9}},
+grid:{display:false}
+},
+y:{
+ticks:{color:'#91a8ba',font:{size:9}},
+grid:{color:'#20384b'}
+}
+}
+}
+});
+}
+
+// Convert an OSM closed way to GeoJSON.
 function featureFromWay(el){
- if(!el.geometry||el.geometry.length<4)return null;
- const coords=el.geometry.map(p=>[p.lon,p.lat]);
- const first=coords[0],last=coords[coords.length-1];
- if(first[0]!==last[0]||first[1]!==last[1])coords.push([...first]);
- if(coords.length<4)return null;
- return {type:'Feature',geometry:{type:'Polygon',coordinates:[coords]},properties:{...el.tags,osm_id:el.id,source:'OpenStreetMap'}};
+
+if(!el.geometry||el.geometry.length<4)return null;
+
+const coords=el.geometry.map(p=>[p.lon,p.lat]);
+
+const first=coords[0];
+const last=coords[coords.length-1];
+
+if(first[0]!==last[0]||first[1]!==last[1]){
+coords.push([...first]);
 }
+
+if(coords.length<4)return null;
+
+return {
+type:'Feature',
+geometry:{
+type:'Polygon',
+coordinates:[coords]
+},
+properties:{
+...el.tags,
+osm_id:el.id,
+source:'OpenStreetMap'
+}
+};
+}
+
+// Divide current visible extent into smaller request tiles.
+function makeTiles(bounds,number){
+
+const s=bounds.getSouth();
+const w=bounds.getWest();
+const n=bounds.getNorth();
+const e=bounds.getEast();
+
+const tiles=[];
+const latStep=(n-s)/number;
+const lngStep=(e-w)/number;
+
+for(let row=0;row<number;row++){
+for(let col=0;col<number;col++){
+
+const south=s+row*latStep;
+const north=row===number-1?n:s+(row+1)*latStep;
+
+const west=w+col*lngStep;
+const east=col===number-1?e:w+(col+1)*lngStep;
+
+tiles.push({
+s:south,
+w:west,
+n:north,
+e:east
+});
+}
+}
+
+// Start near the centre of the visible extent.
+return tiles.sort((a,b)=>{
+const ac=(a.s+a.n)/2;
+const bc=(b.s+b.n)/2;
+const al=(a.w+a.e)/2;
+const bl=(b.w+b.e)/2;
+const centerLat=(s+n)/2;
+const centerLng=(w+e)/2;
+
+const da=Math.pow(ac-centerLat,2)+Math.pow(al-centerLng,2);
+const db=Math.pow(bc-centerLat,2)+Math.pow(bl-centerLng,2);
+
+return da-db;
+});
+}
+
+function buildQuery(tile){
+
+return `[out:json][timeout:90];
+way["building"](${tile.s},${tile.w},${tile.n},${tile.e});
+out tags geom;`;
+}
+
+// Retry an individual tile against available Overpass servers.
+async function requestTile(tile){
+
+const query=buildQuery(tile);
+let lastError=null;
+
+for(const endpoint of OVERPASS_ENDPOINTS){
+
+try{
+
+const controller=new AbortController();
+const timeout=setTimeout(()=>controller.abort(),110000);
+
+const response=await fetch(endpoint,{
+method:'POST',
+headers:{
+'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+},
+body:'data='+encodeURIComponent(query),
+signal:controller.signal
+});
+
+clearTimeout(timeout);
+
+if(!response.ok){
+throw Error('HTTP '+response.status);
+}
+
+const data=await response.json();
+
+if(data.remark){
+throw Error(data.remark);
+}
+
+return data.elements||[];
+
+}catch(err){
+lastError=err;
+console.warn('Overpass tile failed:',endpoint,err);
+}
+}
+
+throw lastError||Error('All Overpass servers unavailable');
+}
+
+// Retrieve buildings using multiple geographic tiles.
 async function fetchOverpass(bounds){
- if(requestBusy){setStatus('REQUEST ALREADY RUNNING',false);return}
- if(map.getZoom()<13){setStatus('ZOOM IN TO BUILDING LEVEL',false);$('dataStatus').textContent='Zoom to at least level 13–14 and retry. This keeps requests small and responsive.';return}
- requestBusy=true;$('progress').style.width='35%';setStatus('QUERYING OPENSTREETMAP');
- const s=bounds.getSouth(),w=bounds.getWest(),n=bounds.getNorth(),e=bounds.getEast();
- const max=Number($('limit').value);
- const query=`[out:json][timeout:45];way["building"](${s},${w},${n},${e});out tags geom ${max+1};`;
- const endpoints=['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter'];
- let data=null,lastError=null;
- for(const endpoint of endpoints){
-  try{const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:'data='+encodeURIComponent(query)});if(!response.ok)throw Error('HTTP '+response.status);data=await response.json();break}catch(err){lastError=err;console.warn(endpoint,err)}
- }
- if(!data){requestBusy=false;$('progress').style.width='0%';setStatus('OSM REQUEST FAILED',false);$('dataStatus').textContent='Could not retrieve building footprints. The Overpass services may be busy or your network may block the request. Try again later or load a smaller map extent.';return}
- const features=(data.elements||[]).map(featureFromWay).filter(Boolean);
- loadedFeatures=features.slice(0,max);renderBuildings();
- $('progress').style.width='100%';setTimeout(()=>$('progress').style.width='0%',800);
- const capped=features.length>max;
- $('dataStatus').innerHTML=`Administrative boundaries: ${eaData?fmt(selectedEAs().length)+' selected EA polygons':'not loaded'}.<br>Buildings returned: <b>${fmt(features.length)}</b>; displayed: <b>${fmt(loadedFeatures.length)}</b>${capped?' (request limit reached)':''}.<br>Extent: ${s.toFixed(3)}, ${w.toFixed(3)} to ${n.toFixed(3)}, ${e.toFixed(3)}.`;
- $('mapfoot').textContent=`${fmt(loadedFeatures.length)} FOOTPRINTS LOADED · WGS 84 / EPSG:4326 · OSM`;
- setStatus(capped?'BUILDINGS LOADED · LIMIT REACHED':'BUILDINGS LOADED');
- requestBusy=false;
+
+if(requestBusy){
+setStatus('REQUEST ALREADY RUNNING',false);
+return;
 }
-function scheduleFetch(){clearTimeout(requestTimer);requestTimer=setTimeout(()=>{if(map.getZoom()>=13)fetchOverpass(map.getBounds())},900)}
+
+if(map.getZoom()<12){
+setStatus('ZOOM IN TO BUILDING LEVEL',false);
+
+$('dataStatus').textContent=
+'Zoom to at least level 12 before requesting building footprints.';
+
+return;
+}
+
+requestBusy=true;
+
+$('load').disabled=true;
+$('load').textContent='LOADING BUILDINGS...';
+
+$('progress').style.width='2%';
+
+setStatus('PREPARING SPATIAL REQUESTS');
+
+const max=Number($('limit').value);
+const divisions=Number($('tiles').value);
+
+const tiles=makeTiles(bounds,divisions);
+
+const collected=new Map();
+let successfulTiles=0;
+let failedTiles=0;
+let processed=0;
+
+$('dataStatus').textContent=
+`Preparing ${tiles.length} spatial requests. Maximum display capacity: ${fmt(max)} buildings.`;
+
+try{
+
+for(let i=0;i<tiles.length;i++){
+
+if(collected.size>=max)break;
+
+const tile=tiles[i];
+
+setStatus(`LOADING TILE ${i+1}/${tiles.length}`);
+
+try{
+
+const elements=await requestTile(tile);
+
+for(const el of elements){
+
+if(collected.size>=max)break;
+
+if(!el.tags || !el.tags.building)continue;
+
+const feature=featureFromWay(el);
+
+if(!feature)continue;
+
+collected.set(String(el.id),feature);
+}
+
+successfulTiles++;
+
+}catch(err){
+
+failedTiles++;
+console.warn('Tile retrieval failed:',tile,err);
+}
+
+processed++;
+
+const percent=Math.round(processed/tiles.length*100);
+
+$('progress').style.width=percent+'%';
+
+$('dataStatus').innerHTML=
+`Spatial requests: <b>${processed}/${tiles.length}</b><br>
+Successful tiles: ${successfulTiles}<br>
+Failed tiles: ${failedTiles}<br>
+Unique buildings retrieved: <b>${fmt(collected.size)}</b><br>
+Target capacity: ${fmt(max)}`;
+
+}
+
+loadedFeatures=Array.from(collected.values()).slice(0,max);
+
+renderBuildings();
+
+const total=loadedFeatures.length;
+
+const complete=processed===tiles.length;
+const capped=total>=max;
+
+$('mapfoot').textContent=
+`${fmt(total)} FOOTPRINTS LOADED · WGS 84 / EPSG:4326 · OSM`;
+
+$('dataStatus').innerHTML=
+`Administrative boundaries: ${eaData?
+fmt(selectedEAs().length)+' selected EA polygons':'not loaded'}.<br>
+Buildings retrieved: <b>${fmt(total)}</b>.<br>
+Spatial requests completed: ${processed}/${tiles.length}.<br>
+Successful tiles: ${successfulTiles}.<br>
+Failed tiles: ${failedTiles}.<br>
+${capped?
+'<b>Display capacity reached.</b>':
+complete?
+'All spatial requests completed.':
+'Some spatial requests were not completed.'}`;
+
+$('progress').style.width='100%';
+
+if(capped){
+setStatus('50,000 BUILDING CAPACITY REACHED');
+}else if(failedTiles>0){
+setStatus('PARTIAL DATA RETRIEVED',false);
+}else{
+setStatus('BUILDINGS LOADED');
+}
+
+}catch(err){
+
+console.error(err);
+setStatus('BUILDING EXTRACTION ERROR',false);
+
+$('dataStatus').textContent=
+'Building extraction encountered an error: '+err.message;
+
+}finally{
+
+requestBusy=false;
+$('load').disabled=false;
+$('load').textContent='LOAD UP TO 50,000 BUILDINGS';
+
+setTimeout(()=>{
+$('progress').style.width='0%';
+},2000);
+}
+}
+
 function switchBase(){
- const next=baseDefs[$('basemap').value]||baseDefs.street;
- if(activeBase)map.removeLayer(activeBase);activeBase=next.addTo(map);
- if(gridLayer)gridLayer.bringToFront();if(eaLayer)eaLayer.bringToFront();if(buildingLayer)buildingLayer.bringToFront();
+
+const next=baseDefs[$('basemap').value]||baseDefs.street;
+
+if(activeBase)map.removeLayer(activeBase);
+
+activeBase=next.addTo(map);
+
+if(gridLayer)gridLayer.bringToFront();
+if(eaLayer)eaLayer.bringToFront();
+if(buildingLayer)buildingLayer.bringToFront();
 }
-function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+
+function download(name,content,type){
+
+const blob=new Blob([content],{type});
+const url=URL.createObjectURL(blob);
+
+const a=document.createElement('a');
+a.href=url;
+a.download=name;
+
+document.body.appendChild(a);
+a.click();
+a.remove();
+
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
 function exportCSV(){
- if(!loadedFeatures.length){alert('Load building footprints first.');return}
- const fields=['osm_id','building','name','addr:street','addr:city','building:levels','source','footprint_area_m2'];
- const rows=[fields.join(',')];loadedFeatures.forEach(f=>{const p=f.properties||{},vals=fields.map(k=>k==='footprint_area_m2'?areaM2(f).toFixed(2):(p[k]??''));rows.push(vals.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','))});
- download('Gambia_OSM_Building_Footprints.csv',rows.join('\n'),'text/csv;charset=utf-8');
+
+if(!loadedFeatures.length){
+alert('Load building footprints first.');
+return;
 }
-function exportGeoJSON(){if(!loadedFeatures.length){alert('Load building footprints first.');return}download('Gambia_OSM_Building_Footprints.geojson',JSON.stringify({type:'FeatureCollection',features:loadedFeatures}), 'application/geo+json')}
+
+const fields=[
+'osm_id',
+'building',
+'name',
+'addr:street',
+'addr:city',
+'building:levels',
+'source',
+'footprint_area_m2'
+];
+
+const rows=[fields.join(',')];
+
+loadedFeatures.forEach(f=>{
+
+const p=f.properties||{};
+
+const vals=fields.map(k=>
+k==='footprint_area_m2'?
+areaM2(f).toFixed(2):
+(p[k]??'')
+);
+
+rows.push(vals.map(v=>
+'"'+String(v).replace(/"/g,'""')+'"'
+).join(','));
+
+});
+
+download(
+'Gambia_OSM_Building_Footprints.csv',
+rows.join('\n'),
+'text/csv;charset=utf-8'
+);
+}
+
+function exportGeoJSON(){
+
+if(!loadedFeatures.length){
+alert('Load building footprints first.');
+return;
+}
+
+const output={
+type:'FeatureCollection',
+features:loadedFeatures
+};
+
+download(
+'Gambia_OSM_Building_Footprints.geojson',
+JSON.stringify(output),
+'application/geo+json'
+);
+}
+
+// EVENT LISTENERS
+
 $('basemap').addEventListener('change',switchBase);
-$('atlasgrid').addEventListener('change',drawGrid);$('gridSize').addEventListener('change',drawGrid);
+
+$('atlasgrid').addEventListener('change',drawGrid);
+$('gridSize').addEventListener('change',drawGrid);
+
 $('admin').addEventListener('change',drawAdmin);
-$('labels').addEventListener('change',renderBuildings);
-$('buildings').addEventListener('change',()=>{if(buildingLayer){if($('buildings').checked)buildingLayer.addTo(map);else map.removeLayer(buildingLayer)}});
-['region','lga','district'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='region'){$('lga').value='';$('district').value='';$('ward').value=''}else if(id==='lga'){$('district').value='';$('ward').value=''}else $('ward').value='';updateAdminOptions();drawAdmin()}));
-$('apply').addEventListener('click',()=>{drawAdmin();const fs=selectedEAs();if(fs.length){const layer=L.geoJSON({type:'FeatureCollection',features:fs});map.fitBounds(layer.getBounds(),{padding:[20,20],maxZoom:14})}});
-$('reset').addEventListener('click',()=>{$('region').value='';updateAdminOptions();$('lga').value='';$('district').value='';$('ward').value='';drawAdmin();map.fitBounds(GAMBIA_BOUNDS)});
-$('load').addEventListener('click',()=>fetchOverpass(map.getBounds()));
-$('clear').addEventListener('click',()=>{loadedFeatures=[];if(buildingLayer)map.removeLayer(buildingLayer);buildingLayer=null;updateStats();$('dataStatus').textContent='Building footprints cleared. Administrative boundaries remain available.';setStatus('READY')});
-$('csv').addEventListener('click',exportCSV);$('geojson').addEventListener('click',exportGeoJSON);
-$('fit').addEventListener('click',()=>map.fitBounds(GAMBIA_BOUNDS));$('home').addEventListener('click',()=>map.fitBounds(GAMBIA_BOUNDS));
-$('zoomIn').addEventListener('click',()=>map.zoomIn());$('zoomOut').addEventListener('click',()=>map.zoomOut());
-map.on('moveend',()=>{drawGrid();if(map.getZoom()>=13)scheduleFetch()});
-map.on('zoomend',()=>{drawGrid()});
-map.fitBounds(GAMBIA_BOUNDS);drawGrid();loadAdmin();
+
+$('labels').addEventListener('change',()=>{
+if(buildingLayer)buildingLayer.setStyle(footprintStyle);
+});
+
+$('buildings').addEventListener('change',()=>{
+if($('buildings').checked){
+renderBuildings();
+}else if(buildingLayer){
+map.removeLayer(buildingLayer);
+}
+});
+
+['region','lga','district'].forEach(id=>{
+
+$(id).addEventListener('change',()=>{
+
+if(id==='region'){
+$('lga').value='';
+$('district').value='';
+$('ward').value='';
+}else if(id==='lga'){
+$('district').value='';
+$('ward').value='';
+}else{
+$('ward').value='';
+}
+
+updateAdminOptions();
+drawAdmin();
+});
+});
+
+$('apply').addEventListener('click',()=>{
+
+drawAdmin();
+
+const fs=selectedEAs();
+
+if(fs.length){
+
+const layer=L.geoJSON({
+type:'FeatureCollection',
+features:fs
+});
+
+map.fitBounds(layer.getBounds(),{
+padding:[20,20],
+maxZoom:14
+});
+}
+});
+
+$('reset').addEventListener('click',()=>{
+
+$('region').value='';
+$('lga').value='';
+$('district').value='';
+$('ward').value='';
+
+updateAdminOptions();
+drawAdmin();
+
+map.fitBounds(GAMBIA_BOUNDS);
+});
+
+$('load').addEventListener('click',()=>{
+fetchOverpass(map.getBounds());
+});
+
+$('clear').addEventListener('click',()=>{
+
+loadedFeatures=[];
+
+if(buildingLayer){
+map.removeLayer(buildingLayer);
+buildingLayer=null;
+}
+
+updateStats();
+
+$('dataStatus').textContent=
+'Building footprints cleared. Administrative boundaries remain available.';
+
+$('mapfoot').textContent=
+'WGS 84 / EPSG:4326 · BUILDINGS LOAD AT LOCAL SCALE';
+
+setStatus('READY');
+});
+
+$('csv').addEventListener('click',exportCSV);
+$('geojson').addEventListener('click',exportGeoJSON);
+
+$('fit').addEventListener('click',()=>{
+map.fitBounds(GAMBIA_BOUNDS);
+});
+
+$('home').addEventListener('click',()=>{
+map.fitBounds(GAMBIA_BOUNDS);
+});
+
+$('zoomIn').addEventListener('click',()=>{
+map.zoomIn();
+});
+
+$('zoomOut').addEventListener('click',()=>{
+map.zoomOut();
+});
+
+// Refresh the atlas grid when the map moves.
+// Building downloads remain manual to avoid repeated
+// requests and unnecessary Overpass server traffic.
+
+map.on('moveend',drawGrid);
+map.on('zoomend',drawGrid);
+
+// INITIALISE
+
+map.fitBounds(GAMBIA_BOUNDS);
+
+drawGrid();
+loadAdmin();
+updateStats();
+
 })();
 </script>
+
 </body>
 </html>
+
